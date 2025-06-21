@@ -5,6 +5,7 @@ const cors = require('cors');
 const health    = require('./routes/health');
 const merchantRoute = require('./routes/merchants');
 const grievanceRoute = require('./routes/grievance');
+const { startTelegramBot } = require('./bot/telegram');
 
 const app = express();
 app.use(express.json());
@@ -15,4 +16,13 @@ app.use('/grievance', grievanceRoute);
 
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀  API up on http://localhost:${PORT}`));
+app.listen(PORT, () => {
+  console.log(`🚀 API up on http://localhost:${PORT}`);
+
+  // Start the Telegram bot
+  if (process.env.TELEGRAM_BOT_TOKEN) {
+    startTelegramBot(process.env.TELEGRAM_BOT_TOKEN);
+  } else {
+    console.warn("⚠️ TELEGRAM_BOT_TOKEN not set in .env");
+  }
+});
