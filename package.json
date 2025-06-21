@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node server.js",
     "db:init": "node db/init.js",
+    "db:seed": "node db/seed.js",
      "dev":   "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
