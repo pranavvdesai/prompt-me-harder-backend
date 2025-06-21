@@ -5,6 +5,8 @@ const cors = require('cors');
 const health    = require('./routes/health');
 const merchantRoute = require('./routes/merchants');
 const grievanceRoute = require('./routes/grievance');
+const analyticsRoute = require('./routes/analytics');
+
 const { startTelegramBot } = require('./bot/telegram');
 
 const app = express();
@@ -13,6 +15,7 @@ app.use(cors());
 app.use('/health', health);
 app.use('/merchant', merchantRoute);
 app.use('/grievance', grievanceRoute);
+app.use('/analytics', analyticsRoute);
 
 
 const PORT = process.env.PORT || 3000;

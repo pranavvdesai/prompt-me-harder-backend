@@ -163,6 +163,28 @@ ALTER TABLE grievances
   REFERENCES merchants(merchant_id)
   ON DELETE RESTRICT;
 
+CREATE TABLE IF NOT EXISTS store_analytics (
+    analytics_id          BIGSERIAL PRIMARY KEY,
+    store_id              BIGINT        NOT NULL,
+    analysis_date         DATE          NOT NULL,
+    total_orders          INT,
+    total_revenue         NUMERIC(10,2),
+    most_ordered_item     VARCHAR(255),
+    least_ordered_item    VARCHAR(255),
+    trending_items        JSONB,
+    order_qty_per_hour    JSONB,
+    most_profitable_hour  SMALLINT,
+    order_qty_per_day     JSONB,
+    most_profitable_day   VARCHAR(9),
+    avg_store_rating      NUMERIC(3,2),
+    dish_ratings          JSONB,
+    revenue_recommendation TEXT,
+    created_at            TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_analytics_store
+      FOREIGN KEY (store_id)
+      REFERENCES stores(store_id)
+      ON DELETE RESTRICT
+);
 
 /* helper indexes */
 CREATE INDEX idx_store_merchant   ON stores(merchant_id);
