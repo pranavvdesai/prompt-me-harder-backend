@@ -5,7 +5,7 @@ const pool = require('./pool');           // same pool.js you already use
 
 const SCHEMAS = ['swiggy', 'zomato', 'magicpin'];
 const rawSQL  = fs.readFileSync(
-  path.join(__dirname, '..', 'sql', 'mock_data.sql'),
+  path.join(__dirname, '..', 'sql', 'mock_data2.sql'),
   'utf8'
 );
 
