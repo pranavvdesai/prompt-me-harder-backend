@@ -137,6 +137,33 @@ CREATE TABLE action_logs (
       FOREIGN KEY (store_id) REFERENCES stores(store_id) ON DELETE RESTRICT
 );
 
+
+CREATE TABLE IF NOT EXISTS grievances (
+  grievance_id   BIGSERIAL PRIMARY KEY,
+  merchant_id    BIGINT NOT NULL,
+  platform       VARCHAR(32),
+  title          VARCHAR(255),
+  description    TEXT,
+  category       VARCHAR(64),
+  severity       VARCHAR(16) DEFAULT 'medium',
+  status         VARCHAR(32) DEFAULT 'open',
+  actions_json   JSONB DEFAULT '[]',
+  last_action_ts TIMESTAMP,
+  next_followup_ts TIMESTAMP,
+  escalation_level SMALLINT DEFAULT 0,
+  created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at     TIMESTAMP,
+  resolved_by    VARCHAR(64),
+  resolved_at    TIMESTAMP
+);
+
+ALTER TABLE grievances
+  ADD CONSTRAINT fk_grievances_merchants
+  FOREIGN KEY (merchant_id)
+  REFERENCES merchants(merchant_id)
+  ON DELETE RESTRICT;
+
+
 /* helper indexes */
 CREATE INDEX idx_store_merchant   ON stores(merchant_id);
 CREATE INDEX idx_menu_store       ON menu_items(store_id);
