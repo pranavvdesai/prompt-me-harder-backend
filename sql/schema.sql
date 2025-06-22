@@ -185,7 +185,6 @@ CREATE TABLE IF NOT EXISTS store_analytics (
       REFERENCES stores(store_id)
       ON DELETE RESTRICT
 );
-
 /* helper indexes */
 CREATE INDEX idx_store_merchant   ON stores(merchant_id);
 CREATE INDEX idx_menu_store       ON menu_items(store_id);
