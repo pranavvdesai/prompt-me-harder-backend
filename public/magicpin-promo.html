@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Magicpin • Weekend Promo</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 15vh; }
+    h1  { margin-bottom: 40px; }
+    button {
+      padding: 20px 40px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      background: #ff5714;
+      color: #fff;
+      cursor: pointer;
+    }
+    button:hover { filter: brightness(1.1); }
+  </style>
+</head>
+<body>
+  <h1>Magicpin Promotion Centre</h1>
+
+  <button id="promoBtn">
+    Roll out <strong>10 % extra off</strong> promotion across the restaurant on the weekend
+  </button>
+
+  <script>
+    document.getElementById('promoBtn').addEventListener('click', async () => {
+      try {
+        await fetch('/magicpin-promo/trigger', { method: 'POST' });
+        alert('Request sent to Telegram bot!');
+      } catch (err) {
+        console.error(err);
+        alert('Failed to notify the bot.');
+      }
+    });
+  </script>
+</body>
+</html>
