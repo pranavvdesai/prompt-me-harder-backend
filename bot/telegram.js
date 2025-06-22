@@ -156,7 +156,12 @@ async function startTelegramBot(token) {
         console.log('[Talk] ⇠ data  ', resp.data);
 
         // const reply = resp.data?.message || 'Sorry, I couldn’t understand that.';
-        const reply = resp.data[response]
+        const reply =
+        typeof resp.data === 'string'
+            ? resp.data                                   // plain string response
+            : resp.data?.message                          // { message: "…" }
+            ?? resp.data?.response                      // { response: "…" }
+            ?? 'Sorry, I couldn’t understand that.';
         bot.sendMessage(chatId, reply);
 
       } catch (err) {
