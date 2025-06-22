@@ -112,6 +112,34 @@ async function startTelegramBot(token) {
       return;
     }
 
+     if (/crypto|web3|airdrop|loyalty/i.test(userTxt)) {
+
+      bot.sendMessage(chatId, '⏳ Creating your loyalty airdrop, please wait…');
+
+      try {
+        const tokenName   = 'Lassi Singh';
+        const tokenSymbol = 'LASSI';
+        const totalSupply = 10_000;
+
+        const recipients  = await buildAirdropList(); // [{address,amount},…]
+        const token = await deployToken(tokenName, tokenSymbol, totalSupply);
+         await disburseTokens("0xDDD0C17A9F360fcBD2BA523D8AfF12b71Ee0851a", recipients);    // ← NEW
+
+        return bot.sendMessage(
+          chatId,
+          `✅ Airdrop complete!\n` +
+          `• Token: ${tokenSymbol} 0xDDD0C17A9F360fcBD2BA523D8AfF12b71Ee0851a\n` +
+          `• Transfers: ${recipients.length} wallets`
+        );
+      } catch (err) {
+        console.error('Airdrop error:', err);
+        return bot.sendMessage(
+          chatId,
+          '⚠️ Sorry, something went wrong while creating the airdrop.'
+        );
+      }
+    }
+
     if (state?.mode === 'talk') {
       try {
         console.log('[Talk] ⇢ POST /chat', { prompt: userTxt });
@@ -153,33 +181,7 @@ async function startTelegramBot(token) {
     }
 
 
-   if (/crypto|web3|airdrop|loyalty/i.test(userTxt)) {
-
-      bot.sendMessage(chatId, '⏳ Creating your loyalty airdrop, please wait…');
-
-      try {
-        const tokenName   = 'Lassi Singh';
-        const tokenSymbol = 'LASSI';
-        const totalSupply = 10_000;
-
-        const recipients  = await buildAirdropList(); // [{address,amount},…]
-        const token = await deployToken(tokenName, tokenSymbol, totalSupply);
-         await disburseTokens("0xDDD0C17A9F360fcBD2BA523D8AfF12b71Ee0851a", recipients);    // ← NEW
-
-        return bot.sendMessage(
-          chatId,
-          `✅ Airdrop complete!\n` +
-          `• Token: ${tokenSymbol} 0xDDD0C17A9F360fcBD2BA523D8AfF12b71Ee0851a\n` +
-          `• Transfers: ${recipients.length} wallets`
-        );
-      } catch (err) {
-        console.error('Airdrop error:', err);
-        return bot.sendMessage(
-          chatId,
-          '⚠️ Sorry, something went wrong while creating the airdrop.'
-        );
-      }
-    }
+  
 
   });
 
