@@ -17,7 +17,6 @@ app.use('/merchant', merchantRoute);
 app.use('/grievance', grievanceRoute);
 app.use('/analytics', analyticsRoute);
 
-throw new Error("🚫 Server intentionally not started for deployment/testing.");
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
