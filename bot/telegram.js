@@ -45,9 +45,27 @@ async function sendPromoMessageToMerchant(text) {
     }
   });
 }
+let botInstance = null;
 
 async function startTelegramBot(token) {
-  bot = new TelegramBot(token, { polling: true });
+  if (botInstance) {
+    console.log('⚠️  Bot is already running – reuse the instance');
+    return botInstance;
+  }
+ const bot = new TelegramBot(token, { polling: true });
+  botInstance = bot;
+
+  // graceful stop when the platform sends SIGTERM / SIGINT
+  const stop = async () => {
+    if (botInstance) {
+      console.log('🛑  Stopping Telegram polling …');
+      await botInstance.stopPolling();
+      botInstance = null;
+    }
+    // Render kills the process right after, no need for process.exit()
+  };
+  process.once('SIGINT',  stop);
+  process.once('SIGTERM', stop);
 
   bot.on('message', async (msg) => {
     const chatId  = msg.chat.id;
@@ -55,6 +73,7 @@ async function startTelegramBot(token) {
     const state   = userState.get(chatId);
     if (!userTxt) return;
 
+    
     // 1️⃣ greet & remember merchant chat id
     if (userTxt.toLowerCase() === 'hey') {
       merchantChatId = chatId;
@@ -68,6 +87,19 @@ async function startTelegramBot(token) {
       });
       return;
     }
+
+        /* ────────────────────────────────────────────────
++       0️⃣  OWNER-ONLY “exit” COMMAND
++       type  exit   ⇒ bot stops polling & terminates
++       ──────────────────────────────────────────────── */
+    if (userTxt.toLowerCase() === 'exit' && chatId === merchantChatId) {
+      await bot.sendMessage(chatId, '👋 Shutting down…');
+      console.log('🛑  Exit command received from owner, stopping polling');
+
+      await bot.stopPolling();
+      process.exit(0);
+      return;                              
+   }
 
     if (userTxt === 'Talk with us') {
       userState.set(chatId, { mode: 'talk' });
@@ -209,6 +241,8 @@ async function startTelegramBot(token) {
   });
 
   console.log('🤖 Telegram bot is running…');
+    return bot;
+
 }
 
 // ─── exports ──────────────────────────────────────────────────────────────────
