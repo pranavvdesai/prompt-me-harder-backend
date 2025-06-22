@@ -73,6 +73,7 @@ async function startTelegramBot(token) {
     const state   = userState.get(chatId);
     if (!userTxt) return;
 
+    
     // 1️⃣ greet & remember merchant chat id
     if (userTxt.toLowerCase() === 'hey') {
       merchantChatId = chatId;
@@ -86,6 +87,19 @@ async function startTelegramBot(token) {
       });
       return;
     }
+
+        /* ────────────────────────────────────────────────
++       0️⃣  OWNER-ONLY “exit” COMMAND
++       type  exit   ⇒ bot stops polling & terminates
++       ──────────────────────────────────────────────── */
+    if (userTxt.toLowerCase() === 'exit' && chatId === merchantChatId) {
+      await bot.sendMessage(chatId, '👋 Shutting down…');
+      console.log('🛑  Exit command received from owner, stopping polling');
+
+      await bot.stopPolling();
+      process.exit(0);
+      return;                              
+   }
 
     if (userTxt === 'Talk with us') {
       userState.set(chatId, { mode: 'talk' });
